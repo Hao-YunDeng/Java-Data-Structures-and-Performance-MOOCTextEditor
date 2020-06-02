@@ -38,7 +38,7 @@ public class BasicDocument extends Document
 		// See the Module 2 support videos if you need help.
 
 		List<String> tokens = getTokens("[a-zA-Z]+");
-		System.out.println("num of words: " + tokens.size());
+		//System.out.println("num of words: " + tokens.size());
 		return tokens.size();
 	}
 	
@@ -61,7 +61,7 @@ public class BasicDocument extends Document
         // if you need help.
 
 		List<String> tokens = getTokens("[^.!?]+");
-		System.out.println("num of sentences: " + tokens.size());
+		//System.out.println("num of sentences: " + tokens.size());
         return tokens.size();
 	}
 	
@@ -109,7 +109,7 @@ public class BasicDocument extends Document
 		{
 			totalSyllables += countSyllables(word);
 		}
-		System.out.println("Total syllables " + totalSyllables);
+		//System.out.println("Total syllables " + totalSyllables);
 		return totalSyllables;
 	}
 	

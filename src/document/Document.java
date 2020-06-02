@@ -157,9 +157,9 @@ public abstract class Document {
 		double wordCount = (double)getNumWords();
 		double sentCount = (double)getNumSentences();
 		double syllCount = (double)getNumSyllables();
-		System.out.println(wordCount);
-		System.out.println(sentCount);
-		System.out.println(syllCount);
+		//System.out.println(wordCount);
+		//System.out.println(sentCount);
+		//System.out.println(syllCount);
 		return 206.835 - 1.015 * wordCount / sentCount - 84.6 * syllCount / wordCount;
 		//to test, go to LaunchClass.java and modify getDocument() method according to the comments
 		//and then run main
