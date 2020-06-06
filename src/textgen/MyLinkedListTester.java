@@ -109,7 +109,9 @@ public class MyLinkedListTester {
 	@Test
 	public void testRemove()
 	{
+		System.out.println("Before removing: "+ list1);
 		int a = list1.remove(0);
+		System.out.println("after removing data at index 0: "+ list1);
 		assertEquals("Remove: check a is correct ", 65, a);
 		assertEquals("Remove: check element 0 is correct ", (Integer)21, list1.get(0));
 		assertEquals("Remove: check size is correct ", 2, list1.size());
@@ -124,7 +126,12 @@ public class MyLinkedListTester {
 	public void testAddEnd()
 	{
         // TODO: implement this test
-		
+		System.out.println("Before adding: "+ list1);
+		boolean addEnd = list1.add(99);
+		System.out.println("after adding at end: "+ list1);
+		assertEquals("add: Check return is true", true, addEnd);
+		assertEquals("add: Check last element", (Integer)99, list1.get(3));
+		assertEquals("add: Check size", 4, list1.size());
 	}
 
 	
@@ -133,6 +140,11 @@ public class MyLinkedListTester {
 	public void testSize()
 	{
 		// TODO: implement this test
+		assertEquals("size: check emptyList has size 0", 0, emptyList.size());
+		assertEquals("size: check shortList has size 2", 2, shortList.size());
+		emptyList.add(1);
+		assertEquals("size: check emptyList has size 1 after adding one element", 
+				1, emptyList.size());		
 	}
 
 	
@@ -145,7 +157,28 @@ public class MyLinkedListTester {
 	public void testAddAtIndex()
 	{
         // TODO: implement this test
+		int preSize = list1.size();
+		System.out.println("Before adding: "+ list1);
+		list1.add(2, 100);
+		System.out.println("after adding 100 at index 2: "+ list1);
 		
+		assertEquals("addAtIndex: Check element added", (Integer)100, list1.get(2));
+		assertEquals("addAtIndex: Check element before", (Integer)21, list1.get(1));
+		assertEquals("addAtIndex: Check element after", (Integer)42, list1.get(3));
+		assertEquals("addAtSize: Check size updated", preSize + 1, list1.size());	
+		
+		try {
+			list1.add(-1, 404);
+			fail("Check out of bounds: negative index");
+		}
+		catch (IndexOutOfBoundsException e) {		
+		}
+		try {
+			list1.add(list1.size()+1, 404);
+			fail("Check out of bounds: index larger than size");
+		}
+		catch (IndexOutOfBoundsException e) {			
+		}	
 	}
 	
 	/** Test setting an element in the list */
@@ -153,7 +186,31 @@ public class MyLinkedListTester {
 	public void testSet()
 	{
 	    // TODO: implement this test
-	    
+		try {
+			list1.set(-1, 404);
+			fail("Check out of bounds: negative index");
+		}
+		catch (IndexOutOfBoundsException e) {			
+		}
+		try {
+			list1.set(list1.size()+1, 404);
+			fail("Check out of bounds: index larger than size");
+		}
+		catch (IndexOutOfBoundsException e) {			
+		}	
+		try {
+			list1.set(2, null);
+			fail("Check null");
+		}
+		catch (NullPointerException e) {
+		}
+		
+		System.out.println("Before setting: "+ list1);
+		int oldData = list1.set(0, 1);
+		System.out.println("after setting: "+ list1);
+		assertEquals("set: check list1 idx 0 has old value of 65", 65, oldData);
+		assertEquals("set: check list1 idx 0 has new value of 1", (Integer)1, list1.get(0));
+		
 	}
 	
 	
