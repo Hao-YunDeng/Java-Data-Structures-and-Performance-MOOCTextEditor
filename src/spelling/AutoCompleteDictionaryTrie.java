@@ -1,7 +1,9 @@
 package spelling;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,10 +39,30 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	 * @return true if the word was successfully added or false if it already exists
 	 * in the dictionary.
 	 */
+    
+    
 	public boolean addWord(String word)
 	{
 	    //TODO: Implement this method.
-	    return false;
+		word = word.toLowerCase();
+		char[] wordArray = word.toCharArray();
+		TrieNode currNode = root;
+		for(int i = 0; i < wordArray.length; i++) {			
+			if(currNode.getValidNextCharacters().contains(wordArray[i])) {
+				currNode = currNode.getChild(wordArray[i]);
+				if(i == wordArray.length - 1) {
+					currNode.setEndsWord(true);
+					return false;
+				}
+			}
+			else {
+				//Haoyun: you cannot just write currNode.insert(wordArray[i]);
+				//when inserting, move on at the same time
+				currNode = currNode.insert(wordArray[i]);
+			}			
+		}
+		currNode.setEndsWord(true);			
+	    return true;
 	}
 	
 	/** 
@@ -49,8 +71,24 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	 */
 	public int size()
 	{
-	    //TODO: Implement this method
-	    return 0;
+	    //TODO: Implement this method		
+		return this.preOrderCount(root);
+	}
+	
+	private int preOrderCount(TrieNode node) {
+		int size = 0;
+		if(node != null) {
+			if(node.endsWord()) {
+				size ++;
+				
+			}
+			for(char c : node.getValidNextCharacters()) {
+				//Haoyun: if you don't include size += in next line, 
+				//you lost the return value from the recursion
+				size += preOrderCount(node.getChild(c));
+			}			 
+		}
+		return size;
 	}
 	
 	
@@ -60,7 +98,18 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public boolean isWord(String s) 
 	{
 	    // TODO: Implement this method
-		return false;
+		s = s.toLowerCase();
+		char[] sArray = s.toCharArray();
+		TrieNode currNode = root;
+		for(int i = 0; i < sArray.length; i++) {			
+			if(currNode.getValidNextCharacters().contains(sArray[i])) {
+				currNode = currNode.getChild(sArray[i]);				
+			}
+			else {
+				return false;
+			}			
+		}
+		return currNode.endsWord();
 	}
 
 	/** 
@@ -100,8 +149,34 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     	 //       If it is a word, add it to the completions list
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
-    	 
-         return null;
+    	 char[] prefixArray = prefix.toLowerCase().toCharArray();
+    	 TrieNode stem = root;
+    	 for(char c : prefixArray) {
+ 			if(stem.getValidNextCharacters().contains(c)) {
+				stem = stem.getChild(c);				
+			}
+			else {
+				return new ArrayList<String>();
+			} 
+    	 }
+    	 Queue<TrieNode> q = new LinkedList<TrieNode>();
+    	 q.add(stem);
+    	 //Haoyun: note here is not q.add(root); 
+    	 //compare to a real levelOrder traversal
+    	 ArrayList<String> completions = new ArrayList<String>();
+    	 while(!q.isEmpty() && completions.size() <numCompletions) {
+    		 TrieNode currNode = q.remove();
+    		 Set<Character> letters = currNode.getValidNextCharacters();
+    		 if(letters != null) {
+    			 if(currNode.endsWord()) {
+    				 completions.add(currNode.getText());
+    			 }	 
+    			 for(char b : letters) {
+    				 q.add(currNode.getChild(b));
+    			 }   			 
+    		 }
+    	 }
+         return completions;   	 
      }
 
  	// For debugging
