@@ -27,9 +27,9 @@ public class WPTree implements WordPath {
 	public WPTree () {
 		this.root = null;
 		// TODO initialize a NearbyWords object
-		// Dictionary d = new DictionaryHashSet();
-		// DictionaryLoader.loadDictionary(d, "data/dict.txt");
-		// this.nw = new NearbyWords(d);
+		Dictionary d = new DictionaryHashSet();
+		DictionaryLoader.loadDictionary(d, "data/dict.txt");
+		this.nw = new NearbyWords(d);
 	}
 	
 	//This constructor will be used by the grader code
@@ -41,7 +41,28 @@ public class WPTree implements WordPath {
 	// see method description in WordPath interface
 	public List<String> findPath(String word1, String word2) 
 	{
-	    // TODO: Implement this method.
+	    // TODO: Implement this method.		
+		List<WPTreeNode> queue = new LinkedList<WPTreeNode>();     // String to explore
+		HashSet<String> visited = new HashSet<String>();   // to avoid exploring the same  
+														   // string multiple times		
+		this.root = new WPTreeNode(word1, null);		
+		visited.add(root.getWord());
+		queue.add(root);
+		
+		while(!queue.isEmpty() && !word1.equals(word2)) {
+			WPTreeNode curr = queue.remove(0);
+			List<String> neighbors = nw.distanceOne(curr.getWord(), true);
+			for(String n : neighbors) {
+				if(!visited.contains(n)) {
+					WPTreeNode child = curr.addChild(n);
+					visited.add(n);
+					queue.add(child);
+					if(n.equals(word2)) {
+						return child.buildPathToRoot();
+					}
+				}
+			}
+		}
 	    return new LinkedList<String>();
 	}
 	
@@ -55,6 +76,20 @@ public class WPTree implements WordPath {
 		ret+= "]";
 		return ret;
 	}
+	
+    public static void main(String[] args) {
+		   
+    	WPTree myWPTree = new WPTree();
+    	List<String> path1 = myWPTree.findPath("time", "theme");
+    	for(String s : path1) {
+    		System.out.print(s + "\t");
+    	}
+    	System.out.print("\n");
+    	List<String> path2 = myWPTree.findPath("apple", "pie");
+    	for(String s : path2) {
+    		System.out.print(s + "\t");
+    	}
+    }
 	
 }
 
@@ -142,6 +177,6 @@ class WPTreeNode {
         ret+=(" ]\n");
         return ret;
     }
-
+    
 }
 
